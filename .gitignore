@@ -1,5 +1,9 @@
+.DS_Store
 **/.DS_Store
+Thumbs.db
 **/Thumbs.db
+*_bkp*
+**/*_bkp*
 mongolink.egg-info
 filessage.txt
 filespy.txt
