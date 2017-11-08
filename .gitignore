@@ -1,0 +1,9 @@
+**/.DS_Store
+**/Thumbs.db
+mongolink.egg-info
+filessage.txt
+filespy.txt
+dist
+build
+**/*_bkp*
+**/*.pyc

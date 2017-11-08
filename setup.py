@@ -5,9 +5,9 @@ from setuptools import setup;
 setup(name='mongolink',
       version='1.0',
       description='A Python API for streaming from a remote MongoDB database.',
-      url='https://github.com/knowbodynos/SLURMongo',
+      url='https://github.com/knowbodynos/mongolink',
       author='Ross Altman',
       author_email='knowbodynos@gmail.com',
-      license='Northeastern University',
+      license='MIT',
       packages=['mongolink'],
       zip_safe=False);
