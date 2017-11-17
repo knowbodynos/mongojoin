@@ -25,9 +25,9 @@ def collectionfind(db,collection,query,projection,options={},formatresult="ITERA
     else:
         result=db[collection].find(query,projection,no_cursor_timeout=True,allow_partial_results=True);
     if "HINT" in options.keys():
-        result=result.hint(options['HINT']);
+        result=result.hint(options['HINT'].items());
     if "SORT" in options.keys():
-        result=result.sort(options['SORT']);
+        result=result.sort(options['SORT'].items());
     if "SKIP" in options.keys():
         result=result.skip(options['SKIP']);
     if "LIMIT" in options.keys():
@@ -238,10 +238,8 @@ def writeasfunc(*args):
     docbatch=arglist[-1];
     with open(arglist[0],"a") as writestream:
         for doc in docbatch:
-            writestream.write(json.dumps(doc,separators=(',',':')));
+            writestream.write(json.dumps(doc,separators=(',',':'))+"\n");
             writestream.flush();
-        writestream.write("\n");
-        writestream.flush();
     return len(docbatch);
 
 def dbcrawl(db,queries,statefilepath,statefilename="querystate",inputfunc=lambda x:{"nsteps":1},inputdoc={"nsteps":1},action=printasfunc,readform=lambda x:eval(x),writeform=lambda x:x,timeleft=lambda:1,counters=[1,1],counterupdate=lambda x:None,resetstatefile=False,limit=None,toplevel=True,initdoc={}):
