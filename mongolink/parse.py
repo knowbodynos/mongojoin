@@ -17,7 +17,7 @@
 import re,copy,bson,json;
 from . import tools;
 
-def bsonsize(doc):
+def get_bsonsize(doc):
     return len(bson.BSON.encode(doc));
 
 def pythonlist2mathematicalist(lst):
