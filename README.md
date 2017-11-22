@@ -46,7 +46,7 @@ with
 2) The main function is `dbcrawl`:
 
 ```
-   dbcrawl(db,queries,statefilepath,statefilename="querystate",inputfunc=lambda x:{"nsteps":1},inputdoc={"nsteps":1},action=printasfunc,readform=lambda x:eval(x),writeform=lambda x:x,timeleft=lambda:1,counters=[1,1],counterupdate=lambda x:None,resetstatefile=False,limit=None,toplevel=True,initdoc={})
+   dbcrawl(db,queries,statefilepath,statefilename="querystate",inputfunc=lambda x:{"nsteps":1},inputdoc={"nsteps":1},action=printasfunc,readform=lambda x:eval(x),writeform=lambda x:x,timeleft=lambda:1,counters=[1,1],counterupdate=lambda x:None,resetstatefile=False,limit=None,limittries=10,toplevel=True,initdoc={})
 ```
 
 where
@@ -70,6 +70,8 @@ where
    9) `resetstatefile` is True or False depending on whether the intermediate file `statefilename` should be overwritten.
 
    10) `limit` is a limit on how many documents should be processed total. If there is no limit, set to None (default).
+
+   11) `limittries` is a limit on how many times a read should be attempted before giving up.
 
    11) `toplevel` and `initdoc` are internal recursive variables and should not be customized.
 

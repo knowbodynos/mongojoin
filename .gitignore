@@ -4,7 +4,7 @@ Thumbs.db
 **/Thumbs.db
 *_bkp*
 **/*_bkp*
-mongolink.egg-info
+*.egg-info
 filessage.txt
 filespy.txt
 dist

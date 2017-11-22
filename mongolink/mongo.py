@@ -17,7 +17,9 @@
 import sys,os,tempfile,signal,json;
 from contextlib import contextmanager;
 from pymongo import MongoClient;
+from pymongo.errors import DocumentTooLarge;
 from math import ceil;
+from time import sleep;
 from . import tools;
 from . import parse;
 
@@ -258,7 +260,7 @@ def writeasfunc(*args):
             writestream.flush();
     return len(docbatch);
 
-def dbcrawl(db,queries,statefilepath,statefilename="querystate",inputfunc=lambda x:{"nsteps":1},inputdoc={"nsteps":1},action=printasfunc,readform=lambda x:eval(x),writeform=lambda x:x,timeleft=lambda:1,counters=[1,1],counterupdate=lambda x:None,resetstatefile=False,limit=None,toplevel=True,initdoc={}):
+def dbcrawl(db,queries,statefilepath,statefilename="querystate",inputfunc=lambda x:{"nsteps":1},inputdoc={"nsteps":1},action=printasfunc,readform=lambda x:eval(x),writeform=lambda x:x,timeleft=lambda:1,counters=[1,1],counterupdate=lambda x:None,resetstatefile=False,limit=None,limittries=10,toplevel=True,initdoc={}):
     docbatch=[];
     #docbatchfiltered=[];
     #docbatchskipped=[];
@@ -341,7 +343,20 @@ def dbcrawl(db,queries,statefilepath,statefilename="querystate",inputfunc=lambda
         #sys.stdout.flush();
         #firstrun=False;
         if cursnext:#i==1:
-            doc=next(docscurs,None);
+            trycount=0;
+            while True:
+                try:
+                    doc=next(docscurs,None);
+                except DocumentTooLarge:
+                    if trycount<limittries:
+                        trycount+=1;
+                        sleep(1);
+                        pass;
+                    else:
+                        raise;
+                else:
+                    break;
+
             #print("doc: "+str(doc)+" <- "+queries[0][0]);
             #sys.stdout.flush();
             if doc==None:
