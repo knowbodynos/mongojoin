@@ -1,23 +1,23 @@
-# mongolink
+# mongojoin
 A package that allows a continuous non-blocking read of large batches of documents from a MongoDB database (remote or local), with some action performed on each batch.
 
 ------------------------------------------------------------------------------------------------------------
 
 Installation instructions:
 
-1) Download the `mongolink` package
+1) Download the `mongojoin` package
 
 ```
-   git clone https://github.com/knowbodynos/mongolink.git
+   git clone https://github.com/knowbodynos/mongojoin.git
 ```
 
 2) Navigate into the main directory
 
 ```
-   cd mongolink
+   cd mongojoin
 ```
 
-3) Install `mongolink`
+3) Install `mongojoin`
 
 ```
    python setup.py install
@@ -25,7 +25,7 @@ Installation instructions:
 
 ------------------------------------------------------------------------------------------------------------
 
-Using `mongolink`:
+Using `mongojoin`:
 
 1) Queries are given in the form of a `python` list of lists:
 
