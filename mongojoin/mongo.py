@@ -260,7 +260,7 @@ def writeasfunc(*args):
             writestream.flush()
     return len(docbatch)
 
-def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc = lambda x: {"nsteps": 1}, inputdoc = {"nsteps": 1}, action = printasfunc, readform = lambda x: eval(x), writeform = lambda x: x, timeleft = lambda: 1, counters = [1, 1], counterupdate = lambda x: None, resetstatefile = False, limit = None, limittries = 10, toplevel = True, initdoc = {}):
+def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc = lambda x: {"ndocs": 1}, inputdoc = {"ndocs": 1}, action = printasfunc, readform = lambda x: eval(x), writeform = lambda x: x, timeleft = lambda: 1, counters = [1, 1], counterupdate = lambda x: None, resetstatefile = False, limit = None, limittries = 10, toplevel = True, initdoc = {}):
     docbatch = []
     #docbatchfiltered = []
     #docbatchskipped = []
@@ -382,7 +382,7 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
             #print "f"
             #sys.stdout.flush()
             newinputdoc = inputdoc.copy()
-            newinputdoc.update({"nsteps": inputdoc["nsteps"] - len(docbatch)})
+            newinputdoc.update({"ndocs": inputdoc["ndocs"] - len(docbatch)})
             #print "g"
             #sys.stdout.flush()
             newinitdoc = initdoc.copy()
@@ -422,7 +422,7 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
                 #    updatequerystate(queries, statefilepath, statefilename, allcollindexes, docbatchskipped, endofdocsskipped, readform = readform, writeform = writeform)
                 #    docbatchskipped = []
                 #    endofdocsskipped = []
-                if (len(docbatch) == inputdoc["nsteps"]) or not (timeleft() > 0):
+                if (len(docbatch) == inputdoc["ndocs"]) or not (timeleft() > 0):
                     #print "docbatch: " + str([dict([(y, x[y]) for z in allcollindexes for y in z if y in x.keys()]) for x in docbatch])
                     if (limit != None) and (counters[1] + len(docbatch) > limit):
                         docbatch = docbatch[:limit - counters[1] + 1]
@@ -521,7 +521,7 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
                     endofdocs += [[all(endofsubdocs[j]) and (not docscurs.alive)] + endofsubdocs[j]]
                     #skipdocs += [skipsubdocs[j]]
                 projfields.update(subprojfields)
-                if (len(docbatch) == inputdoc["nsteps"]) or not (timeleft() > 0):
+                if (len(docbatch) == inputdoc["ndocs"]) or not (timeleft() > 0):
                     #skipdocs = [True for x in docbatchskipped] + [False for x in docbatch]
                     return [projfields, endofdocs, docbatch]
         #i += 1
