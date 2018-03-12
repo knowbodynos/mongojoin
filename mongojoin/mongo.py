@@ -260,7 +260,7 @@ def writeasfunc(*args):
             writestream.flush()
     return len(docbatch)
 
-def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc = lambda x: {"ndocs": 1}, inputdoc = {"ndocs": 1}, action = printasfunc, readform = lambda x: eval(x), writeform = lambda x: x, timeleft = lambda: 1, counters = [1, 1], counterupdate = lambda x: None, resetstatefile = False, limit = None, limittries = 10, toplevel = True, initdoc = {}):
+def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc = lambda x: {"ndocs": 1}, inputdoc = {"ndocs": 1}, action = printasfunc, readform = lambda x: eval(x), writeform = lambda x: x, timeleft = lambda: 1, counters = [1, 1, 1, 1], counterupdate = lambda x: None, resetstatefile = False, limit = None, limittries = 10, toplevel = True, initdoc = {}):
     docbatch = []
     #docbatchfiltered = []
     #docbatchskipped = []
@@ -432,7 +432,7 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
                     while len(docbatch) > 0:
                         docbatchprojfields = [dict([y for y in x.items() if y[0] in projfields.keys()]) for x in docbatch]
                         #docbatchpass = action(counters, inputdoc, docbatchprojfields)
-                        nextdocind = action(counters, inputdoc, docbatchprojfields)
+                        batchincr, nextdocind, stepbatchincr, stepnextdocind = action(counters, inputdoc, docbatchprojfields)
                         if nextdocind == None:#docbatchpass == None:
                             break
                         docbatchprojfieldspass = docbatchprojfields[nextdocind:]
@@ -456,8 +456,10 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
                         endofdocswrite = endofdocs[:nextdocind]
                         #print "docbatchwrite: " + str([dict([(y, x[y]) for z in allcollindexes for y in z if y in x.keys()]) for x in docbatchwrite])
                         updatequerystate(queries, statefilepath, statefilename, allcollindexes, docbatchwrite, endofdocswrite, readform = readform, writeform = writeform)
-                        counters[0] += 1
+                        counters[0] += batchincr
                         counters[1] += nextdocind
+                        counters[2] += stepbatchincr
+                        counters[3] += stepnextdocind
                         counterupdate(counters)
                         #docbatchtier = []
                         #for j in range(len(docbatch)):
@@ -540,7 +542,7 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
                 docbatch = docbatch[:limit - counters[1] + 1]
             docbatchprojfields = [dict([y for y in x.items() if y[0] in projfields.keys()]) for x in docbatch]
             #docbatchpass = action(counters, inputdoc, docbatchprojfields)
-            nextdocind = action(counters, inputdoc, docbatchprojfields)
+            batchincr, nextdocind, stepbatchincr, stepnextdocind = action(counters, inputdoc, docbatchprojfields)
             if nextdocind == None:#docbatchpass == None:
                 break
             docbatchprojfieldspass = docbatchprojfields[nextdocind:]
@@ -562,8 +564,10 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
             endofdocswrite = endofdocs[:nextdocind]
             #print "docbatchwrite: " + str([dict([(y, x[y]) for z in allcollindexes for y in z if y in x.keys()]) for x in docbatchwrite])
             updatequerystate(queries, statefilepath, statefilename, allcollindexes, docbatchwrite, endofdocswrite, readform = readform, writeform = writeform)
-            counters[0] += 1
+            counters[0] += batchincr
             counters[1] += nextdocind
+            counters[2] += stepbatchincr
+            counters[3] += stepnextdocind
             counterupdate(counters)
             #docbatchfiltered = docbatchfilteredpass
             #endofdocsfiltered = endofdocsfilteredpass
