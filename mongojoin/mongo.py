@@ -14,7 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os, tempfile, signal, json
+import sys, os, tempfile, signal, json, pymongo
 from contextlib import contextmanager
 from pymongo import MongoClient
 from pymongo.errors import DocumentTooLarge
@@ -249,7 +249,11 @@ def printasfunc(*args):
     for doc in docbatch:
         print(json.dumps(doc, separators = (',', ':')))
     sys.stdout.flush()
-    return len(docbatch)
+    batchincr = 1
+    nextdocind = len(docbatch)
+    stepbatchincr = batchincr
+    stepnextdocind = nextdocind
+    return batchincr, nextdocind, stepbatchincr, stepnextdocind
 
 def writeasfunc(*args):
     arglist = list(args)
@@ -258,7 +262,11 @@ def writeasfunc(*args):
         for doc in docbatch:
             writestream.write(json.dumps(doc, separators = (',', ':')) + "\n")
             writestream.flush()
-    return len(docbatch)
+    batchincr = 1
+    nextdocind = len(docbatch)
+    stepbatchincr = batchincr
+    stepnextdocind = nextdocind
+    return batchincr, nextdocind, stepbatchincr, stepnextdocind
 
 def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc = lambda x: {"ndocs": 1}, inputdoc = {"ndocs": 1}, action = printasfunc, readform = lambda x: eval(x), writeform = lambda x: x, timeleft = lambda: 1, counters = [1, 1, 1, 1], counterupdate = lambda x: None, resetstatefile = False, limit = None, limittries = 10, toplevel = True, initdoc = {}):
     docbatch = []
@@ -354,6 +362,8 @@ def dbcrawl(db, queries, statefilepath, statefilename = "querystate", inputfunc 
                         pass
                     else:
                         raise
+                except Exception:
+                    raise
                 else:
                     break
 
